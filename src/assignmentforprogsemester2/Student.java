@@ -2,18 +2,16 @@ package assignmentforprogsemester2;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 
-public class AssignmentForPROGSemester2 {
+public class Student {
 
     static JOptionPane jop = new JOptionPane();
     static public ArrayList<Students> studentDetails = new ArrayList<>();
@@ -22,6 +20,7 @@ public class AssignmentForPROGSemester2 {
     public static void main(String[] args) {
 
         boolean stillGo = true;
+        int test = 1;
 
         populateArrayList();
 
@@ -41,10 +40,10 @@ public class AssignmentForPROGSemester2 {
                     captureAStudent();
                     break;
                 case 2:
-                    studentSearch();
+                    studentSearch(test);
                     break;
                 case 3:
-
+                    deleteStudent();
                     break;
                 case 4:
 
@@ -67,8 +66,8 @@ public class AssignmentForPROGSemester2 {
                 ArrayList<Students> temp;
                 try ( FileInputStream fileIn = new FileInputStream("students.txt");  ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
                     temp = (ArrayList<Students>) objectIn.readObject();
+                    System.out.println("intial read in ");
                 }
-
                 studentDetails.addAll(temp);
                 System.out.println("intial file test existense and read from worked");
                 System.out.println(studentDetails.toString() + "\n");
@@ -77,7 +76,9 @@ public class AssignmentForPROGSemester2 {
                 try {
                     File create = new File("students.txt");
                     create.createNewFile();
-
+                    System.out.println("bad loop");
+                    populateArrayList();
+                    System.out.println("bad loop");
                 } catch (IOException ex2) {
                     System.out.println(ex2);
                     System.out.println("something wrong with file create");
@@ -114,26 +115,36 @@ public class AssignmentForPROGSemester2 {
     }
 
     public static void captureAStudent() {
-
+        System.out.println("does this run at all");
         String id = "";
         String name = "";
         String age = "";
         String email = "";
         String course = "";
-
-        Students s = null;
-
-        id = s.setId(id);
-        name = s.setName(name);
-        age = s.setAge(age);
-        email = s.setEmail(email);
-        course = s.setCourse(course);
-
+        String str1 = "";
+System.out.println("breaks here 1 ?");
+        Students s = new Students(s.setId(id), );
+System.out.println("breaks here 2 ?");
+        //s.setId(id);
+        System.out.println("1");
+        s.setName(name);
+        System.out.println("2");
+        s.setAge(age);
+        System.out.println("3");
+        s.setEmail(email);
+        System.out.println("4");
+        s.setCourse(course);
+        
+        System.out.println("cap student after object intializATION worked");
+        
         s = new Students(id, name, age, email, course);
-
+        
+        System.out.println("cap student making the student didnt work");
+        
         studentDetails.add(s);
 
-        String str1 = String.format("Student ID: %s, \nStudent Name: %s, \nStudent Age: %s, \nStudent Email: %s, \nStudent Course: %s", id, name, age, email, course);
+        
+        str1 = s.toString();
         jop.showMessageDialog(null, str1);
         saveToFile();
 
@@ -151,7 +162,7 @@ public class AssignmentForPROGSemester2 {
             try ( FileOutputStream fileOut = new FileOutputStream("students.txt");  ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
                 objectOut.writeObject(studentDetails);
-
+                System.out.println("save worked");
             }
         } catch (IOException ex) {
             System.out.println(ex);
@@ -160,14 +171,24 @@ public class AssignmentForPROGSemester2 {
 
     }
 
-    public static void studentSearch() {
-        String str = jop.showInputDialog("Enter the student id to search").trim();
+    public static Students studentSearch(int split) {
+
+        Students searchedStudent = null;
+        String str;
+
+        if (split == 1) {
+            str = jop.showInputDialog("Enter the student id to search").trim();
+        } else {
+            str = jop.showInputDialog("Please enter the student id you wold like to delete").trim();
+        }
 
         List<Students> searchResult;
+        System.out.println("this doesnt work 1");
         searchResult = studentDetails.stream()
                 .filter(student -> student.getId().equals(str))
                 .collect(Collectors.toList());
-
+        System.out.println("this doesnt work 2");
+        System.out.println(searchResult.toString());
         if (searchResult.isEmpty()) {
             jop.showMessageDialog(null, "Student with Id: " + str + " was not found!");
             String options = jop.showInputDialog("Enter (1) to launch menu or any other key to exit");
@@ -181,7 +202,7 @@ public class AssignmentForPROGSemester2 {
             }
         } else {
 
-            Students searchedStudent = searchResult.get(0);
+            searchedStudent = searchResult.get(0);
 
             System.out.println(searchedStudent.toString());
 
@@ -195,5 +216,42 @@ public class AssignmentForPROGSemester2 {
                 exitStudentApplication();
             }
         }
+        return searchedStudent;
     }
+
+    public static void deleteStudent() {
+        /*
+        gotta make sure that the user is asked to double check
+         */
+
+        boolean surity = true;
+
+        Students deleteThem = studentSearch(0);
+
+        String str = jop.showInputDialog("Are you sure you want to delete Student " + deleteThem.getId() + "? This will remove them permanantly!" + "\nPlease answer with either a y or n").trim();
+
+        if (str.equals("y")) {
+            surity = false;
+            if (!surity) {
+                boolean remove = studentDetails.remove(deleteThem);
+                if (remove) {
+                    System.out.println("good delete");
+                    saveToFile();
+                } else {
+                    System.out.println("bad delete");
+                }
+            }
+        }
+        if (str.equals("n")) {
+            String str1 = jop.showInputDialog("Enter (1) to launch the menu or any other key to exit");
+
+            if (str1 != null && str1.equals("1")) {
+                launchMenu();
+            } else {
+                exitStudentApplication();
+            }
+        }
+
+    }
+
 }

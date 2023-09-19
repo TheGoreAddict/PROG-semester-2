@@ -1,20 +1,20 @@
 package assignmentforprogsemester2;
 
-import static assignmentforprogsemester2.AssignmentForPROGSemester2.jop;
+import static assignmentforprogsemester2.Student.jop;
 import java.io.Serializable;
 
 public class Students implements Serializable {
-    
-    //for serialization do this so it can read old ones
+
+    //for serialization do this so it can read old ones and not remake each time?
     private static final long serialVersionUID = 7934225719615820579L;
-    
+
     static private String id;
     static private String name;
     static private String age;
     static private String email;
     static private String course;
 
-    public Students (String id, String name, String age, String email, String course) {
+    public Students(String id, String name, String age, String email, String course) {
         Students.id = id;
         Students.name = name;
         Students.age = age;
@@ -22,51 +22,49 @@ public class Students implements Serializable {
         Students.course = course;
     }
 
-    public String setId(String id) {
-        
+    public void setId(String id) {
+
         boolean check = false;
-        
+
         while (!check) {
-            
+
             //check for pre existing id 
-            
-            String str = jop.showInputDialog("Enter the student ID:");
-            if (!str.isEmpty() && str.matches("\\d+")) {
-                id = str;
+            id = jop.showInputDialog("Enter the student ID:").trim();
+            if (!id.isEmpty() && id.matches("\\d+")) {
+                Students.id = id;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid numeric ID.");
             }
         }
-        return id;
+
     }
 
-    public static String setName(String name) {
-        
+    public void setName(String name) {
         boolean check = false;
-        
+
         while (!check) {
-            String str = jop.showInputDialog("Enter the student name:");
-            if (!str.isEmpty() && str.matches("[a-zA-Z]+")) {
-                name = str;
+            name = jop.showInputDialog("Enter the student name:").trim();
+            if (!name.isEmpty() && name.matches("[a-zA-Z]+")) {
+                Students.name = name;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid name with no numbers or special characters.");
             }
         }
-        return name;
+
     }
 
-    public static String setAge(String age) {
-        
+    public void setAge(String age) {
         boolean check = false;
-        
+
         while (!check) {
-            String str = jop.showInputDialog("Enter the student age:");
+            age = jop.showInputDialog("Enter the student age:").trim();
             try {
-                int i = Integer.parseInt(str);
+                int i = Integer.parseInt(age);
                 if (i >= 16) {
-                    age = String.valueOf(i);
+                    
+                    Students.age = age;
                     check = true;
                 } else {
                     jop.showMessageDialog(null, "Please enter a valid age (at least 16).");
@@ -75,56 +73,45 @@ public class Students implements Serializable {
                 jop.showMessageDialog(null, "Please enter a valid age (at least 16).");
             }
         }
-        return age;
+
     }
 
-    public static String setEmail(String email) {
-        
+    public void setEmail(String email) {
         boolean check = false;
-        
-         while (!check) {
-            String str = jop.showInputDialog("Enter the student email:");
-            if (!str.isEmpty() && str.contains("@") && str.contains(".")) {
-                email = str;
+
+        while (!check) {
+            email = jop.showInputDialog("Enter the student email:").trim();
+            if (!email.isEmpty() && email.contains("@") && email.contains(".")) {
+                Students.email = email;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid email address.");
             }
         }
-         return email;
+
     }
 
-    public static String setCourse(String course) {
-        
+    public void setCourse(String course) {
         boolean check = false;
-        
+
         while (!check) {
-            String str = jop.showInputDialog("Enter the student course:");
-            if (!str.isEmpty() && str.matches("[a-zA-Z]+")) {
-                course = str;
+            course = jop.showInputDialog("Enter the student course:").trim();
+            if (!course.isEmpty() && course.matches("[a-zA-Z]+")) {
+                Students.course = course;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid course name.");
             }
         }
-        return course;
     }
-    
-    
-    
+
     public String getId() {
         return id;
     }
 
-   @Override
+    @Override
     public String toString() {
-        return String.format("Student Id: %s , Student Name: %s , Student Age: %s , Student Email: %s , Student Course: %s", id , name , age , email , course);
-    
-        
+        return String.format("Student Id: %s  \nStudent Name: %s  \nStudent Age: %s  \nStudent Email: %s  \nStudent Course: %s\n", id, name, age, email, course);
     }
     
-    
-    
-   
-
 }
