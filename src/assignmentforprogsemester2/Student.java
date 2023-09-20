@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
@@ -27,35 +28,36 @@ public class Student {
         String launch = jop.showInputDialog("STUDENT MANAGMENT APPLICATION\n" + "*************************************\n" + "Enter (1) to launch menu or any other key to exit");
 
         if (launch.equals("1")) {
-            menuOption = launchMenu();
+            
+            while (stillGo) {
+
+                menuOption = launchMenu();
+
+                switch (menuOption) {
+                    case 1:
+                        captureAStudent();
+                        break;
+                    case 2:
+                        studentSearch(test);
+                        break;
+                    case 3:
+                        deleteStudent();
+                        break;
+                    case 4:
+                        studentReport();
+                        break;
+                    case 5:
+                        exitStudentApplication();
+                    default:
+                        jop.showMessageDialog(null, "Inlaid input please try again");
+
+                }
+            }
         } else {
             exitStudentApplication();
         }
 
 //gonna have a swutch break here for each diffrent menu option
-        while (stillGo) {
-
-            switch (menuOption) {
-                case 1:
-                    captureAStudent();
-                    break;
-                case 2:
-                    studentSearch(test);
-                    break;
-                case 3:
-                    deleteStudent();
-                    break;
-                case 4:
-
-                    break;
-                case 5:
-                    exitStudentApplication();
-                default:
-                    jop.showMessageDialog(null, "Inlaid input please try again");
-
-            }
-        }
-
     }
 
     public static void populateArrayList() {
@@ -95,16 +97,30 @@ public class Student {
         }
     }
 
+    public static void endOfFunction() {
+        String str = jop.showInputDialog("Enter (1) to launch the menu or any other key to exit");
+
+        if (str != null && str.equals("1")) {
+            // launchMenu();
+        } else {
+            exitStudentApplication();
+        }
+    }
+
     public static int launchMenu() {
         int i = 0;
         String str = "";
+        boolean check = false;
 
-        try {
-
+        while (!check) {
             str = jop.showInputDialog("Please select one of the following items\n" + "(1) Capture a new student.\n" + "(2) Search for a student.\n" + "(3) Delete a student.\n" + "(4) Print student report.\n" + "(5) Exit application");
 
-        } catch (NumberFormatException ex) {
-            exitStudentApplication();
+            if (str.contains("1") || str.contains("2") || str.contains("3") || str.contains("4") || str.contains("5")) {
+                check = true;
+            } else {
+                jop.showMessageDialog(null, "Please only enter a prescribed above action!");
+            }
+
         }
         i = Integer.parseInt(str);
         return i;
@@ -122,10 +138,14 @@ public class Student {
         String email = "";
         String course = "";
         String str1 = "";
-System.out.println("breaks here 1 ?");
-        Students s = new Students(s.setId(id), );
-System.out.println("breaks here 2 ?");
-        //s.setId(id);
+
+        System.out.println("breaks here 1 ?");
+
+        Students s = new Students(id, name, age, email, course);
+
+        System.out.println("breaks here 2 ?");
+
+        s.setId(id);
         System.out.println("1");
         s.setName(name);
         System.out.println("2");
@@ -134,27 +154,19 @@ System.out.println("breaks here 2 ?");
         s.setEmail(email);
         System.out.println("4");
         s.setCourse(course);
-        
+
         System.out.println("cap student after object intializATION worked");
-        
-        s = new Students(id, name, age, email, course);
-        
+
+        //s = new Students(id, name, age, email, course);
         System.out.println("cap student making the student didnt work");
-        
+
         studentDetails.add(s);
 
-        
         str1 = s.toString();
         jop.showMessageDialog(null, str1);
         saveToFile();
 
-        String str = jop.showInputDialog("Enter (1) to launch the menu or any other key to exit");
-
-        if (str != null && str.equals("1")) {
-            launchMenu();
-        } else {
-            exitStudentApplication();
-        }
+        endOfFunction();
     }
 
     public static void saveToFile() {
@@ -172,8 +184,13 @@ System.out.println("breaks here 2 ?");
     }
 
     public static Students studentSearch(int split) {
+        String id = "";
+        String name = "";
+        String age = "";
+        String email = "";
+        String course = "";
 
-        Students searchedStudent = null;
+        Students searchedStudent = new Students(id, name, age, email, course);
         String str;
 
         if (split == 1) {
@@ -206,15 +223,7 @@ System.out.println("breaks here 2 ?");
 
             System.out.println(searchedStudent.toString());
 
-            String options = jop.showInputDialog("Enter (1) to launch menu or any other key to exit");
-
-            if (options.equals("1")) {
-
-                launchMenu();
-            } else {
-
-                exitStudentApplication();
-            }
+            endOfFunction();
         }
         return searchedStudent;
     }
@@ -225,8 +234,9 @@ System.out.println("breaks here 2 ?");
          */
 
         boolean surity = true;
+        int y = 0;
 
-        Students deleteThem = studentSearch(0);
+        Students deleteThem = studentSearch(y);
 
         String str = jop.showInputDialog("Are you sure you want to delete Student " + deleteThem.getId() + "? This will remove them permanantly!" + "\nPlease answer with either a y or n").trim();
 
@@ -243,13 +253,18 @@ System.out.println("breaks here 2 ?");
             }
         }
         if (str.equals("n")) {
-            String str1 = jop.showInputDialog("Enter (1) to launch the menu or any other key to exit");
+            endOfFunction();
+        }
+    }
 
-            if (str1 != null && str1.equals("1")) {
-                launchMenu();
-            } else {
-                exitStudentApplication();
-            }
+    public static void studentReport() {
+        int i = 0;
+        String str = "";
+        
+        for (Iterator<Students> display = studentDetails.iterator(); display.hasNext();) {
+            Students s = display.next();
+            str = str + ("STUDENT " + i + "\n" + s.toString() + "----------------------------------------------------\n");
+            i++;
         }
 
     }
