@@ -28,27 +28,23 @@ public class Student {
         String launch = jop.showInputDialog("STUDENT MANAGMENT APPLICATION\n" + "*************************************\n" + "Enter (1) to launch menu or any other key to exit");
 
         if (launch.equals("1")) {
-            
+
             while (stillGo) {
 
                 menuOption = launchMenu();
 
                 switch (menuOption) {
-                    case 1:
+                    case 1 ->
                         captureAStudent();
-                        break;
-                    case 2:
+                    case 2 ->
                         studentSearch(test);
-                        break;
-                    case 3:
+                    case 3 ->
                         deleteStudent();
-                        break;
-                    case 4:
+                    case 4 ->
                         studentReport();
-                        break;
-                    case 5:
+                    case 5 ->
                         exitStudentApplication();
-                    default:
+                    default ->
                         jop.showMessageDialog(null, "Inlaid input please try again");
 
                 }
@@ -77,10 +73,11 @@ public class Student {
                 System.out.println("students.txt does not exist, creating a new file.");
                 try {
                     File create = new File("students.txt");
-                    create.createNewFile();
-                    System.out.println("bad loop");
-                    populateArrayList();
-                    System.out.println("bad loop");
+                    if (create.createNewFile()) {
+                        System.out.println("File created successfully.");
+                    } else {
+                        System.out.println("File already exists.");
+                    }
                 } catch (IOException ex2) {
                     System.out.println(ex2);
                     System.out.println("something wrong with file create");
@@ -105,6 +102,20 @@ public class Student {
         } else {
             exitStudentApplication();
         }
+    }
+
+    public static void saveToFile() {
+        try {
+            try ( FileOutputStream fileOut = new FileOutputStream("students.txt");  ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+
+                objectOut.writeObject(studentDetails);
+                System.out.println("save worked");
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("saveg isntr working");
+        }
+
     }
 
     public static int launchMenu() {
@@ -169,20 +180,6 @@ public class Student {
         endOfFunction();
     }
 
-    public static void saveToFile() {
-        try {
-            try ( FileOutputStream fileOut = new FileOutputStream("students.txt");  ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
-
-                objectOut.writeObject(studentDetails);
-                System.out.println("save worked");
-            }
-        } catch (IOException ex) {
-            System.out.println(ex);
-            System.out.println("saveg isntr working");
-        }
-
-    }
-
     public static Students studentSearch(int split) {
         String id = "";
         String name = "";
@@ -192,47 +189,55 @@ public class Student {
 
         Students searchedStudent = new Students(id, name, age, email, course);
         String str;
-
+        //if(split >= 1){
         if (split == 1) {
             str = jop.showInputDialog("Enter the student id to search").trim();
-        } else {
+        }else{
             str = jop.showInputDialog("Please enter the student id you wold like to delete").trim();
         }
+        //}
+        int i = Integer.parseInt(str);
 
         List<Students> searchResult;
-        System.out.println("this doesnt work 1");
+        
         searchResult = studentDetails.stream()
-                .filter(student -> student.getId().equals(str))
+                .filter(student -> student != null && student.getId() != null && student.getId().equals(str))
                 .collect(Collectors.toList());
-        System.out.println("this doesnt work 2");
+
+        
+
         System.out.println(searchResult.toString());
+
         if (searchResult.isEmpty()) {
             jop.showMessageDialog(null, "Student with Id: " + str + " was not found!");
+
             String options = jop.showInputDialog("Enter (1) to launch menu or any other key to exit");
 
             if (options.equals("1")) {
 
-                launchMenu();
+                //launchMenu();
             } else {
 
                 exitStudentApplication();
             }
         } else {
+            if (split == 1) {
+                
+                searchedStudent = searchResult.get(0);
+                jop.showMessageDialog(null, searchedStudent.toString());
+                endOfFunction();
+            }
+            if (split == 0) {
+                 searchedStudent = searchResult.get(0);
+                jop.showMessageDialog(null, searchedStudent.toString());
+            }
 
-            searchedStudent = searchResult.get(0);
-
-            System.out.println(searchedStudent.toString());
-
-            endOfFunction();
         }
         return searchedStudent;
     }
 
     public static void deleteStudent() {
-        /*
-        gotta make sure that the user is asked to double check
-         */
-
+        
         boolean surity = true;
         int y = 0;
 
@@ -258,15 +263,15 @@ public class Student {
     }
 
     public static void studentReport() {
-        int i = 0;
+        int i = 1;
         String str = "";
-        
+
         for (Iterator<Students> display = studentDetails.iterator(); display.hasNext();) {
             Students s = display.next();
-            str = str + ("STUDENT " + i + "\n" + s.toString() + "----------------------------------------------------\n");
+            str = str + ("STUDENT " + i + "\n" + "----------------------------------------------------\n" + s.toString() + "----------------------------------------------------\n");
             i++;
         }
-
+        jop.showMessageDialog(null, str);
     }
 
 }

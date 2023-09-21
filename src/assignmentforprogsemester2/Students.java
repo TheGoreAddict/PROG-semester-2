@@ -8,18 +8,18 @@ public class Students implements Serializable {
     //for serialization do this so it can read old ones and not remake each time?
     private static final long serialVersionUID = 7934225719615820579L;
 
-    static private String id;
-    static private String name;
-    static private String age;
-    static private String email;
-    static private String course;
+     private String id;
+     private String name;
+     private String age;
+     private String email;
+     private String course;
 
     public Students(String id, String name, String age, String email, String course) {
-        Students.id = id;
-        Students.name = name;
-        Students.age = age;
-        Students.email = email;
-        Students.course = course;
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.course = course;
     }
 
     public void setId(String id) {
@@ -31,7 +31,7 @@ public class Students implements Serializable {
             //check for pre existing id 
             id = jop.showInputDialog("Enter the student ID:").trim();
             if (!id.isEmpty() && id.matches("\\d+")) {
-                Students.id = id;
+                this.id = id;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid numeric ID.");
@@ -46,7 +46,7 @@ public class Students implements Serializable {
         while (!check) {
             name = jop.showInputDialog("Enter the student name:").trim();
             if (!name.isEmpty() && name.matches("[a-zA-Z]+")) {
-                Students.name = name;
+                this.name = name;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid name with no numbers or special characters.");
@@ -64,7 +64,7 @@ public class Students implements Serializable {
                 int i = Integer.parseInt(age);
                 if (i >= 16) {
                     
-                    Students.age = age;
+                    this.age = age;
                     check = true;
                 } else {
                     jop.showMessageDialog(null, "Please enter a valid age (at least 16).");
@@ -82,7 +82,7 @@ public class Students implements Serializable {
         while (!check) {
             email = jop.showInputDialog("Enter the student email:").trim();
             if (!email.isEmpty() && email.contains("@") && email.contains(".")) {
-                Students.email = email;
+                this.email = email;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid email address.");
@@ -97,7 +97,7 @@ public class Students implements Serializable {
         while (!check) {
             course = jop.showInputDialog("Enter the student course:").trim();
             if (!course.isEmpty() && course.matches("[a-zA-Z]+")) {
-                Students.course = course;
+                this.course = course;
                 check = true;
             } else {
                 jop.showMessageDialog(null, "Please enter a valid course name.");
