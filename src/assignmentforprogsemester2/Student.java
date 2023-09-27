@@ -19,7 +19,12 @@ public class Student {
     private static int menuOption = 0;
 
     public static void main(String[] args) {
-
+        /*
+        main
+        - just gonna be menu swaping 
+            - use switch case
+        
+         */
         boolean stillGo = true;
         int test = 1;
 
@@ -57,6 +62,14 @@ public class Student {
     }
 
     public static void populateArrayList() {
+        /*
+        sets up initial arraylist with any posiibly saved objects from any previos instances 
+        
+        stream filter makes life easy try using that. i dont think even bufferd writer would work here
+        
+        dont forget to take out debugging sout's
+        
+         */
 
         try {
             File read = new File("students.txt");
@@ -95,6 +108,12 @@ public class Student {
     }
 
     public static void endOfFunction() {
+
+        /*
+        have to use this a lot so made it a method 
+        
+        was gonna take out the // launch menu thats commented out but it makes it easier to read coiuse it helps you understand what happens without it makign to many menus appear(why its commented out) same for the rest of them
+         */
         String str = jop.showInputDialog("Enter (1) to launch the menu or any other key to exit");
 
         if (str != null && str.equals("1")) {
@@ -105,6 +124,15 @@ public class Student {
     }
 
     public static void saveToFile() {
+        /*
+        to save objects specifically use the filout/inputStream 
+        -works kind of like a fileread or write in principle but it serializes the information. ive come to understand now that supposedly serialization isnt that great in terms of security but its super effienct so i thought proper security is a bit much
+        
+        saves studentDetails at any point in time as StudentDetails is a class variable so its always constant
+        
+        also doeant append. So it doesnt add to the file it jsut rewrites the file eniterly as the data is kept on hand in the studentDetails arraylist and its savbed so often cause there are a lot of chamnces to leave the program without something being saved
+        
+         */
         try {
             try ( FileOutputStream fileOut = new FileOutputStream("students.txt");  ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
@@ -119,6 +147,10 @@ public class Student {
     }
 
     public static int launchMenu() {
+        /*
+        basic number return nothing fancy 
+        easy validation check
+         */
         int i = 0;
         String str = "";
         boolean check = false;
@@ -138,11 +170,23 @@ public class Student {
     }
 
     public static void exitStudentApplication() {
+        /*
+        i thought this was nifty i didbnt know about it before this 
+         */
         System.exit(0);
     }
 
     public static void captureAStudent() {
-        System.out.println("does this run at all");
+        /*
+        
+        the actual grunt work of this is done in the Students object class
+        
+        just build an object and then add append it the constant studentDetails ArrayList(which when declared at the top was declared as a ArrayList<Students> so it can even hold the objects)
+        
+        alwaswy need to save to file to keep updated persistant records
+        
+         */
+        
         String id = "";
         String name = "";
         String age = "";
@@ -150,26 +194,17 @@ public class Student {
         String course = "";
         String str1 = "";
 
-        System.out.println("breaks here 1 ?");
-
         Students s = new Students(id, name, age, email, course);
 
-        System.out.println("breaks here 2 ?");
-
-        s.setId(id);
-        System.out.println("1");
+        s.setId(id, studentDetails);
+        
         s.setName(name);
-        System.out.println("2");
+        
         s.setAge(age);
-        System.out.println("3");
+        
         s.setEmail(email);
-        System.out.println("4");
+        
         s.setCourse(course);
-
-        System.out.println("cap student after object intializATION worked");
-
-        //s = new Students(id, name, age, email, course);
-        System.out.println("cap student making the student didnt work");
 
         studentDetails.add(s);
 
@@ -181,6 +216,17 @@ public class Student {
     }
 
     public static Students studentSearch(int split) {
+        /*
+        
+        i use this class for the delete student just to make sure the student is the right one chosen
+        
+        the if alows for multi use diffrent functions 
+        
+        the stream is super useful for this.
+        -the null pointers are important as they allow for a catch sort of for any nulls cause the normal filter part in the lambda(student.getId().equals(str)) that doesnt do null and throws a null pointer exception but a try catch didnt work
+        
+        the two similar ifs at the bottom is also for multi use case also with the delete method
+        */
         String id = "";
         String name = "";
         String age = "";
@@ -189,22 +235,20 @@ public class Student {
 
         Students searchedStudent = new Students(id, name, age, email, course);
         String str;
-        //if(split >= 1){
+        
         if (split == 1) {
             str = jop.showInputDialog("Enter the student id to search").trim();
-        }else{
+        } else {
             str = jop.showInputDialog("Please enter the student id you wold like to delete").trim();
         }
-        //}
+        
         int i = Integer.parseInt(str);
 
         List<Students> searchResult;
-        
+
         searchResult = studentDetails.stream()
                 .filter(student -> student != null && student.getId() != null && student.getId().equals(str))
                 .collect(Collectors.toList());
-
-        
 
         System.out.println(searchResult.toString());
 
@@ -222,13 +266,13 @@ public class Student {
             }
         } else {
             if (split == 1) {
-                
+
                 searchedStudent = searchResult.get(0);
                 jop.showMessageDialog(null, searchedStudent.toString());
                 endOfFunction();
             }
             if (split == 0) {
-                 searchedStudent = searchResult.get(0);
+                searchedStudent = searchResult.get(0);
                 jop.showMessageDialog(null, searchedStudent.toString());
             }
 
@@ -237,12 +281,17 @@ public class Student {
     }
 
     public static void deleteStudent() {
+        /*
+        pretty basic the work is done by the .remove function
         
+        uses the student search instead of making redundent code
+        */
+
         boolean surity = true;
         int y = 0;
 
         Students deleteThem = studentSearch(y);
-
+        
         String str = jop.showInputDialog("Are you sure you want to delete Student " + deleteThem.getId() + "? This will remove them permanantly!" + "\nPlease answer with either a y or n").trim();
 
         if (str.equals("y")) {
@@ -263,6 +312,10 @@ public class Student {
     }
 
     public static void studentReport() {
+        /*
+        simple string building but used a for itarater as it allowed for more effienct coming through of each object than a for each 
+        */
+         
         int i = 1;
         String str = "";
 
